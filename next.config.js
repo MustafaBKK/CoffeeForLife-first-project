@@ -2,17 +2,9 @@
 const nextConfig = {
   output: 'export',
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-    domains: ['images.unsplash.com'],
-    unoptimized: true
+    unoptimized: true,
   },
+  trailingSlash: true,
 }
 
 module.exports = nextConfig 
