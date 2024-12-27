@@ -13,7 +13,7 @@ const blogContent = {
 
       UNESCO'nun bu kararı, Türk kahvesinin dünya kültür mirasındaki önemini vurgular. Bu karar, sadece kahvenin kendisini değil, etrafında şekillenen tüm kültürel öğeleri de kapsar: kahve falı geleneği, sohbet kültürü ve misafir ağırlama ritüelleri.
 
-      Günümüzde Türk kahvesi, modern kahve kültürü i��inde özel bir yere sahiptir. Geleneksel yöntemlerle hazırlanması ve sunumu, fast-food kültürüne bir alternatif sunar. Bu yönüyle, yavaş yaşam ve mindfulness kavramlarıyla da örtüşür.
+      Günümüzde Türk kahvesi, modern kahve kültürü iinde özel bir yere sahiptir. Geleneksel yöntemlerle hazırlanması ve sunumu, fast-food kültürüne bir alternatif sunar. Bu yönüyle, yavaş yaşam ve mindfulness kavramlarıyla da örtüşür.
     `,
     readTime: "5 dk okuma"
   },
@@ -48,6 +48,14 @@ const blogContent = {
     readTime: "6 dk okuma"
   }
 };
+
+export async function generateStaticParams() {
+  return [
+    { slug: 'turk-kahvesi-unesco' },
+    { slug: 'ethiopia-kahve-hikayesi' },
+    { slug: 'japonya-kahve-kulturu' }
+  ];
+}
 
 export default function BlogPost({ params }: { params: { slug: string } }) {
   const post = blogContent[params.slug as keyof typeof blogContent];
