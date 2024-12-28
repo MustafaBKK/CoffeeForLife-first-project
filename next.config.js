@@ -3,13 +3,20 @@ const nextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
-    loader: 'default',
-    path: '/',
-    domains: ['localhost'],
+    loader: 'custom',
+    loaderFile: './image-loader.js',
   },
-  basePath: '',
-  distDir: 'out',
-  assetPrefix: './',
+  trailingSlash: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  experimental: {
+    optimizeCss: true,
+    scrollRestoration: true,
+  },
 }
 
 module.exports = nextConfig 
