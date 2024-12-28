@@ -3,8 +3,13 @@ const nextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
+    loader: 'default',
+    path: '/',
+    domains: ['localhost'],
   },
-  trailingSlash: true,
+  basePath: '',
+  distDir: 'out',
+  assetPrefix: './',
 }
 
 module.exports = nextConfig 
