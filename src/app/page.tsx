@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface BlogPost {
   title: string;
@@ -12,33 +13,50 @@ interface BlogPost {
   content: string;
 }
 
+interface Recipe {
+  name: string;
+  image: string;
+  description: string;
+  recipe: string;
+  tips: Array<{
+    tr: string;
+    en: string;
+  }>;
+}
+
 const blogPosts: BlogPost[] = [
   {
-    title: "Türk Kahvesi'nin Tarihi",
+    title: "Kahvenin Sağlığa Faydaları",
     date: "15 Mayıs 2024",
     readTime: "5 dk okuma",
-    summary: "Türk kahvesi kültürünün zengin tarihi ve gelenekleri hakkında bilgi edinin.",
-    image: "/turkish-coffee.jpg",
+    summary: "Düzenli kahve tüketiminin vücut ve zihin sağlığına olan olumlu etkileri.",
+    image: "/coffee-benefits.jpg",
     content: `
-      Türk kahvesi, UNESCO tarafından "İnsanlığın Somut Olmayan Kültürel Mirası" listesine alınmış benzersiz bir içecektir. 16. yüzyılda Osmanlı İmparatorluğu döneminde İstanbul'a gelen kahve, kısa sürede saray ve toplum hayatının vazgeçilmez bir parçası haline geldi.
+      Kahve, sadece lezzetli bir içecek değil, aynı zamanda sağlığımıza birçok faydası olan doğal bir kaynaktır. Bilimsel araştırmalar, düzenli kahve tüketiminin çeşitli sağlık yararları sağladığını göstermektedir.
 
-      Türk kahvesi hazırlama yöntemi, kahve kültürüne benzersiz bir katkı sağlamıştır. İnce öğütülmüş kahve, su ve isteğe bağlı şeker ile cezve içinde pişirilir. Bu yöntem, kahvenin tüm aromalarını ve lezzetini en üst düzeyde ortaya çıkarır.
+      Antioksidan Kaynağı: Kahve, polifenoller başta olmak üzere güçlü antioksidanlar içerir. Bu bileşikler, vücudumuzu serbest radikallere karşı korur ve yaşlanma karşıtı etki gösterir. Düzenli kahve tüketimi, hücre hasarını önlemeye yardımcı olur.
 
-      Türk kahvesi sadece bir içecek değil, aynı zamanda sosyal hayatın, misafirperverliğin ve gelecek falının da önemli bir parçasıdır. Kahve ikramı, sohbetin başlangıcı ve dostluğun simgesidir.
+      Metabolizma ve Enerji: Kahvenin içerdiği kafein, metabolizma hızını artırır ve yağ yakımını destekler. Fiziksel performansı artırarak egzersiz verimliliğini yükseltir. Ayrıca enerji seviyelerini artırarak günlük aktivitelerde daha dinç olmamızı sağlar.
+
+      Zihinsel Performans: Kahve, dikkat ve konsantrasyonu artırır, hafızayı güçlendirir. Düzenli kahve tüketimi, bilişsel fonksiyonların korunmasına yardımcı olur ve yaşa bağlı mental gerilemeyi yavaşlatabilir.
+
+      Karaciğer Sağlığı: Araştırmalar, kahve tüketiminin karaciğer sağlığını desteklediğini ve karaciğer hastalıkları riskini azaltabileceğini göstermektedir.
     `
   },
   {
-    title: "Ethiopia Kahve Hikayesi",
+    title: "Kahve Demleme Sanatı",
     date: "12 Mayıs 2024",
-    readTime: "7 dk okuma",
-    summary: "Kahvenin anavatanı Ethiopia'nın kahve kültürü ve üretim yöntemleri.",
-    image: "/ethiopia-story.jpg",
+    readTime: "4 dk okuma",
+    summary: "Farklı demleme teknikleri ve püf noktaları.",
+    image: "/brewing-art.jpg",
     content: `
-      Kahvenin hikayesi, Ethiopia'nın yeşil tepelerinde başlar. Efsaneye göre, 9. yüzyılda yaşayan Kaldi adlı bir keçi çobanı, keçilerinin bazı kırmızı meyveleri yedikten sonra unusual derecede enerjik olduklarını fark eder.
+      Kahve demleme, basit gibi görünse de aslında ince ayarlar ve dikkat gerektiren bir sanattır. Her bir demleme yöntemi, kahvenin farklı özelliklerini ortaya çıkarır.
 
-      Bu keşif, kahvenin dünya serüveninin başlangıcı olur. Ethiopia'nın Kaffa bölgesi, kahvenin anavatanı olarak kabul edilir. Burada yetişen yabani kahve ağaçları, bugün bildiğimiz tüm kahve çeşitlerinin atasıdır.
+      Pour-over yöntemi, kahvenin tüm aromalarını açığa çıkaran hassas bir tekniktir. Su sıcaklığı, kahve granül boyutu ve demleme süresi gibi faktörler, final tadını önemli ölçüde etkiler.
 
-      Ethiopia'da kahve sadece bir içecek değil, aynı zamanda kutsal bir ritüeldir. Geleneksel kahve seremonisi, topluluk bağlarını güçlendirir ve misafirperverliğin en önemli göstergesidir.
+      French Press, kahvenin yağlarını ve zengin tatlarını koruyan geleneksel bir yöntemdir. Doğru bekleme süresi ve presleme tekniği, mükemmel bir fincan için kritik öneme sahiptir.
+
+      Espresso hazırlama ise başlı başına bir uzmanlık gerektirir. Doğru basınç, su sıcaklığı ve öğütme inceliği, kusursuz bir espresso için şarttır.
     `
   },
   {
@@ -57,88 +75,184 @@ const blogPosts: BlogPost[] = [
   }
 ];
 
-const coffeeOrigins = [
-  {
-    name: "Arabica",
-    image: "/arabica.jpg",
-    description: "Dünya'nın en popüler kahve türü, yumuşak ve aromatik tadıyla bilinir."
-  },
-  {
-    name: "Robusta",
-    image: "/robusta.jpg",
-    description: "Güçlü ve yoğun tada sahip, yüksek kafeinli kahve türü."
-  },
-  {
-    name: "Liberica",
-    image: "/liberica.jpg",
-    description: "Nadir bulunan, meyvemsi ve çiçeksi aromaya sahip özel kahve türü."
-  },
-  {
-    name: "Brasil",
-    image: "/brasil.jpg",
-    description: "Düşük asidite, yoğun çikolata ve fındık notalarıyla tanınan yumuşak içimli kahve."
-  },
-  {
-    name: "Ethiopia",
-    image: "/ethiopia.jpg",
-    description: "Çiçeksi ve meyvemsi notalar, yüksek asidite ile kahvenin anavatanından gelen özel tat."
-  }
-];
-
-const coffeeRecipes = [
-  {
-    name: "Türk Kahvesi",
-    image: "/turkish-coffee.jpg",
-    description: "Geleneksel Türk kahvesi hazırlama yöntemi.",
-    recipe: "İnce öğütülmüş kahve + su + isteğe bağlı şeker, cezve ile pişirilir"
-  },
-  {
-    name: "White Mocha",
-    image: "/white-mocha.jpg",
-    description: "Beyaz çikolata ve espresso'nun muhteşem uyumu.",
-    recipe: "Espresso + beyaz çikolata sosu + buharlanmış süt + süt köpüğü"
-  },
-  {
-    name: "Spanish Latte",
-    image: "/spanish-latte.jpg",
-    description: "Yoğunlaştırılmış süt ile hazırlanan özel latte.",
-    recipe: "Espresso + yoğunlaştırılmış süt + buharlanmış süt"
-  },
-  {
-    name: "Latte",
-    image: "/latte.jpg",
-    description: "Kadifemsi süt köpüğü ile hazırlanan klasik latte.",
-    recipe: "Espresso + buharlanmış süt + ince süt köpüğü"
-  },
-  {
-    name: "Cappuccino",
-    image: "/cappuccino.jpg",
-    description: "Eşit oranda espresso, süt ve süt köpüğü.",
-    recipe: "Espresso + buharlanmış süt + yoğun süt köpüğü"
-  },
-  {
-    name: "Chemex",
-    image: "/chemex.jpg",
-    description: "El yapımı filtre kahve demleme yöntemi.",
-    recipe: "30g kahve + 500ml su (94°C) + Chemex filtre kağıdı"
-  },
-  {
-    name: "V60 Pour Over",
-    image: "/v60.jpg",
-    description: "Japon tarzı damlatma yöntemi ile hazırlanan kahve.",
-    recipe: "22g kahve + 350ml su (92-96°C) + V60 filtre kağıdı"
-  },
-  {
-    name: "Cold Brew",
-    image: "/cold-brew-coffee.jpg",
-    description: "Soğuk demleme yöntemi ile hazırlanan kahve.",
-    recipe: "100g kahve + 1L su, 12-24 saat soğuk demleme"
-  }
-];
-
 export default function Home() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageError, setImageError] = useState<{[key: string]: boolean}>({});
+
+  // Loading bitince isLoading'i false yap
+  setTimeout(() => {
+    setIsLoading(false);
+  }, 1000);
+
+  // Görsel yüklenemezse fallback göster
+  const handleImageError = (imagePath: string) => {
+    setImageError(prev => ({...prev, [imagePath]: true}));
+  };
+
+  const coffeeOrigins = [
+    {
+      name: "Brasil Irmas Pereira",
+      description: language === 'tr' 
+        ? "Karamel tatlılığı, badem ve çikolata notaları ile öne çıkan, kadın üreticilerden gelen özel kahve."
+        : "A special coffee from women producers, featuring caramel sweetness, almond, and chocolate notes.",
+      image: "/brasil-irmas.jpg"
+    },
+    {
+      name: "Colombia Monte Blanco",
+      description: language === 'tr'
+        ? "Yüksek rakımda yetiştirilen, şeftali ve bergamot notalarıyla zengin, dengeli asiditeye sahip kahve."
+        : "High-altitude coffee with rich peach and bergamot notes, featuring balanced acidity.",
+      image: "/colombia-monte.jpg"
+    },
+    {
+      name: "Colombia El Mirador Koji",
+      description: language === 'tr'
+        ? "Koji fermentasyonu ile işlenen, tropik meyve ve karamel notalarına sahip özel işlem kahve."
+        : "A specially processed coffee with Koji fermentation, featuring tropical fruit and caramel notes.",
+      image: "/colombia-mirador.jpg"
+    },
+    {
+      name: "Rwanda Kilimbi Nyamasheke",
+      description: language === 'tr'
+        ? "Böğürtlen ve narenciye notaları ile parlak asiditeye sahip, Rwanda'nın seçkin kahvelerinden."
+        : "One of Rwanda's finest coffees with blackberry and citrus notes, featuring bright acidity.",
+      image: "/rwanda-kilimbi.jpg"
+    }
+  ];
+
+  const coffeeRecipes: Recipe[] = [
+    {
+      name: "Türk Kahvesi",
+      image: "/turkish-coffee.jpg",
+      description: language === 'tr' ? "Geleneksel Türk kahvesi hazırlama yöntemi." : "Traditional Turkish coffee brewing method.",
+      recipe: "İnce öğütülmüş kahve + su + isteğe bağlı şeker, cezve ile pişirilir",
+      tips: [
+        {
+          tr: "Kahveyi çok karıştırmayın, köpüğü kaçar",
+          en: "Don't stir too much, it will lose its foam"
+        },
+        {
+          tr: "Kısık ateşte sabırla pişirin",
+          en: "Cook patiently on low heat"
+        }
+      ]
+    },
+    {
+      name: "White Mocha",
+      image: "/white-mocha.jpg",
+      description: language === 'tr' ? "Beyaz çikolata ve espresso'nun muhteşem uyumu." : "Perfect harmony of white chocolate and espresso.",
+      recipe: "Espresso + beyaz çikolata sosu + buharlanmış süt + süt köpüğü",
+      tips: [
+        {
+          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
+          en: "Avoid burning the milk, ideal temperature is 65°C"
+        },
+        {
+          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
+          en: "Use freshly ground coffee for best results"
+        }
+      ]
+    },
+    {
+      name: "Spanish Latte",
+      image: "/spanish-latte.jpg",
+      description: language === 'tr' ? "Yoğunlaştırılmış süt ile hazırlanan özel latte." : "Special latte prepared with condensed milk.",
+      recipe: "Espresso + yoğunlaştırılmış süt + buharlanmış süt",
+      tips: [
+        {
+          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
+          en: "Avoid burning the milk, ideal temperature is 65°C"
+        },
+        {
+          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
+          en: "Use freshly ground coffee for best results"
+        }
+      ]
+    },
+    {
+      name: "Latte",
+      image: "/latte.jpg",
+      description: language === 'tr' ? "Kadifemsi süt köpüğü ile hazırlanan klasik latte." : "Classic latte prepared with velvety milk foam.",
+      recipe: "Espresso + buharlanmış süt + ince süt köpüğü",
+      tips: [
+        {
+          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
+          en: "Avoid burning the milk, ideal temperature is 65°C"
+        },
+        {
+          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
+          en: "Use freshly ground coffee for best results"
+        }
+      ]
+    },
+    {
+      name: "Cappuccino",
+      image: "/cappuccino.jpg",
+      description: language === 'tr' ? "Eşit oranda espresso, süt ve süt köpüğü." : "Equal parts of espresso, milk, and milk foam.",
+      recipe: "Espresso + buharlanmış süt + yoğun süt köpüğü",
+      tips: [
+        {
+          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
+          en: "Avoid burning the milk, ideal temperature is 65°C"
+        },
+        {
+          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
+          en: "Use freshly ground coffee for best results"
+        }
+      ]
+    },
+    {
+      name: "Chemex",
+      image: "/chemex.jpg",
+      description: language === 'tr' ? "El yapımı filtre kahve demleme yöntemi." : "Handcrafted filter coffee brewing method.",
+      recipe: "30g kahve + 500ml su (94°C) + Chemex filtre kağıdı",
+      tips: [
+        {
+          tr: "Su sıcaklığı 92-96°C arasında olmalı",
+          en: "Water temperature should be 92-96°C"
+        },
+        {
+          tr: "Toplam demleme süresi 4-5 dakika olmalı",
+          en: "Total brewing time should be 4-5 minutes"
+        }
+      ]
+    },
+    {
+      name: "V60 Pour Over",
+      image: "/v60.jpg",
+      description: language === 'tr' ? "Japon tarzı damlatma yöntemi ile hazırlanan kahve." : "Coffee prepared with Japanese drip brewing method.",
+      recipe: "22g kahve + 350ml su (92-96°C) + V60 filtre kağıdı",
+      tips: [
+        {
+          tr: "Su sıcaklığı 92-96°C arasında olmalı",
+          en: "Water temperature should be 92-96°C"
+        },
+        {
+          tr: "Toplam demleme süresi 2.5-3 dakika olmalı",
+          en: "Total brewing time should be 2.5-3 minutes"
+        }
+      ]
+    },
+    {
+      name: "Cold Brew",
+      image: "/cold-brew-coffee.jpg",
+      description: language === 'tr' ? "Soğuk demleme yöntemi ile hazırlanan kahve." : "Coffee prepared with cold brewing method.",
+      recipe: "100g kahve + 1L su, 12-24 saat soğuk demleme",
+      tips: [
+        {
+          tr: "Kaba çekilmiş kahve kullanın",
+          en: "Use coarsely ground coffee"
+        },
+        {
+          tr: "Buzdolabında 12-24 saat demlemeye bırakın",
+          en: "Let it brew in the refrigerator for 12-24 hours"
+        }
+      ]
+    }
+  ];
 
   return (
     <main className="min-h-screen bg-[#f8f3e7]">
@@ -151,13 +265,16 @@ export default function Home() {
               <a href="#coffee-types" className="hover:text-[#d4a574] transition-colors">
                 {language === 'tr' ? 'Kahve Çeşitleri' : 'Coffee Types'}
               </a>
+              <Link href="/discover" className="px-4 py-2 bg-[#d4a574] text-[#2c1810] rounded-full hover:bg-[#e5b585] transition-colors font-medium">
+                {language === 'tr' ? 'Keşfet' : 'Discover'}
+              </Link>
             </div>
 
             {/* Orta Logo */}
             <span className="flex items-center gap-3 text-lg">
-              <span className="text-[#d4a574] text-xl">◇</span>
+              <span className="text-[#d4a574] text-xl">♤</span>
               <span className="font-serif tracking-wider text-[#e5b585]">Made by Mustafa</span>
-              <span className="text-[#d4a574] text-xl">◇</span>
+              <span className="text-[#d4a574] text-xl">♤</span>
             </span>
 
             {/* Sağ Menü ve Dil Seçimi */}
@@ -194,16 +311,21 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with Loading State */}
       <section className="relative h-[90vh] flex items-center justify-center">
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/coffee-hero.jpg"
-            alt="Kahve"
-            fill
-            className="object-cover brightness-50"
-            priority
-          />
+          {isLoading ? (
+            <div className="w-full h-full bg-gray-300 animate-pulse" />
+          ) : (
+            <Image
+              src="/coffee-hero.jpg"
+              alt="Kahve"
+              fill
+              className="object-cover brightness-50"
+              priority
+              onError={() => handleImageError('/coffee-hero.jpg')}
+            />
+          )}
         </div>
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
@@ -225,11 +347,11 @@ export default function Home() {
         </h2>
         <div className="relative max-w-7xl mx-auto">
           <div className="overflow-x-auto pb-8 hide-scrollbar">
-            <div className="flex gap-8 w-max px-4 snap-x snap-mandatory">
-              {coffeeOrigins.map((coffee, index) => (
+            <div className="flex gap-8 w-max px-4">
+              {[...coffeeOrigins, ...coffeeOrigins, ...coffeeOrigins].map((coffee, index) => (
                 <div 
                   key={index} 
-                  className="bg-white rounded-lg shadow-lg overflow-hidden w-[350px] flex-shrink-0 transition-transform hover:scale-105 snap-center"
+                  className="bg-white rounded-lg shadow-lg overflow-hidden w-[350px] flex-shrink-0 transition-transform hover:scale-105"
                 >
                   <div className="h-48 relative">
                     <Image
@@ -252,7 +374,18 @@ export default function Home() {
           <button 
             onClick={() => {
               const container = document.querySelector('.overflow-x-auto');
-              if (container) container.scrollBy({ left: -400, behavior: 'smooth' });
+              if (container) {
+                container.scrollBy({ left: -400, behavior: 'smooth' });
+                // Ortadaki sete geldiğinde scroll pozisyonunu ayarla
+                if (container.scrollLeft <= 400) {
+                  setTimeout(() => {
+                    container.scrollTo({ 
+                      left: container.scrollWidth / 3, 
+                      behavior: 'auto' 
+                    });
+                  }, 500);
+                }
+              }
             }}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors"
           >
@@ -261,7 +394,18 @@ export default function Home() {
           <button 
             onClick={() => {
               const container = document.querySelector('.overflow-x-auto');
-              if (container) container.scrollBy({ left: 400, behavior: 'smooth' });
+              if (container) {
+                container.scrollBy({ left: 400, behavior: 'smooth' });
+                // Ortadaki seti geçtiğinde scroll pozisyonunu ayarla
+                if (container.scrollLeft >= (container.scrollWidth / 3) * 2 - container.clientWidth) {
+                  setTimeout(() => {
+                    container.scrollTo({ 
+                      left: container.scrollWidth / 3, 
+                      behavior: 'auto' 
+                    });
+                  }, 500);
+                }
+              }
             }}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors"
           >
@@ -270,34 +414,63 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kahve Tarifleri Section */}
-      <section id="recipes" className="py-20 px-4 md:px-8 bg-white">
-        <h2 className="text-4xl font-bold text-center mb-12 text-[#2c1810]">
-          {language === 'tr' ? 'Kahve Hazırlama Yöntemleri' : 'Coffee Brewing Methods'}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-          {coffeeRecipes.map((coffee, index) => (
-            <div key={index} className="bg-[#f8f3e7] rounded-lg shadow-lg overflow-hidden">
-              <div className="h-48 relative">
-                <Image
-                  src={coffee.image}
-                  alt={coffee.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-semibold mb-2">{coffee.name}</h3>
-                <p className="text-gray-600 mb-4">{coffee.description}</p>
-                <div className="bg-white p-4 rounded-lg">
-                  <h4 className="font-semibold mb-2">
-                    {language === 'tr' ? 'Tarif:' : 'Recipe:'}
-                  </h4>
-                  <p className="text-sm text-gray-600">{coffee.recipe}</p>
+      {/* Kahve Tarifleri Section with Loading & Error States */}
+      <section id="recipes" className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#2c1810]">
+            {language === 'tr' ? 'Kahve Tarifleri' : 'Coffee Recipes'}
+          </h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {coffeeRecipes.map((recipe, index) => (
+              <div
+                key={index}
+                className="bg-[#f8f3e7] rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 cursor-pointer"
+                onClick={() => setSelectedRecipe(recipe)}
+              >
+                <div className="h-48 relative">
+                  {isLoading ? (
+                    <div className="w-full h-full bg-gray-300 animate-pulse" />
+                  ) : (
+                    <Image
+                      src={imageError[recipe.image] ? '/fallback-coffee.jpg' : recipe.image}
+                      alt={recipe.name}
+                      fill
+                      className="object-cover"
+                      onError={() => handleImageError(recipe.image)}
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white">
+                    {recipe.name}
+                  </h3>
+                </div>
+                
+                <div className="p-4">
+                  <p className="text-gray-700 text-sm mb-4">
+                    {recipe.description}
+                  </p>
+                  <button 
+                    className="w-full bg-[#d4a574] text-white py-2 px-4 rounded-full hover:bg-[#2c1810] transition-colors text-sm font-medium"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      try {
+                        setSelectedRecipe(recipe);
+                      } catch (error) {
+                        console.error('Tarif seçilirken hata oluştu:', error);
+                        // Kullanıcıya nazik bir hata mesajı göster
+                        alert(language === 'tr' 
+                          ? 'Tarif yüklenirken bir hata oluştu. Lütfen tekrar deneyin.' 
+                          : 'An error occurred while loading the recipe. Please try again.');
+                      }
+                    }}
+                  >
+                    {language === 'tr' ? 'Tarifi Gör' : 'View Recipe'}
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
@@ -338,29 +511,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Modal */}
-      {selectedPost && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      {/* Recipe Modal with Error Handling */}
+      {selectedRecipe && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-3xl font-bold text-[#2c1810]">{selectedPost.title}</h2>
-                <button
-                  onClick={() => setSelectedPost(null)}
-                  className="text-gray-500 hover:text-gray-700"
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-bold text-[#2c1810]">{selectedRecipe.name}</h3>
+                <button 
+                  onClick={() => setSelectedRecipe(null)}
+                  className="text-gray-500 hover:text-[#2c1810]"
                 >
                   ✕
                 </button>
               </div>
-              <div className="flex justify-between items-center text-sm text-gray-500 mb-6">
-                <span>{selectedPost.date}</span>
-              </div>
-              <div className="prose prose-lg max-w-none">
-                {selectedPost.content.split('\n').map((paragraph, index) => (
-                  <p key={index} className="mb-4 text-gray-700">
-                    {paragraph.trim()}
-                  </p>
-                ))}
+
+              <div className="space-y-6">
+                {/* Recipe content with error handling */}
+                <div className="bg-[#f8f3e7] rounded-lg p-4">
+                  <h4 className="font-semibold text-[#2c1810] mb-3">
+                    {language === 'tr' ? 'Malzemeler' : 'Ingredients'}
+                  </h4>
+                  <div className="text-gray-600">
+                    {selectedRecipe.recipe.split('+').map((ingredient, idx) => (
+                      <p key={idx} className="flex items-center">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {ingredient.trim()}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tips with error handling */}
+                <div className="bg-[#f8f3e7] rounded-lg p-4">
+                  <h4 className="font-semibold text-[#2c1810] mb-3">
+                    {language === 'tr' ? 'Püf Noktaları' : 'Tips'}
+                  </h4>
+                  <div className="text-gray-600">
+                    {selectedRecipe.tips?.map((tip, idx) => (
+                      <p key={idx} className="flex items-center">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr' ? tip.tr : tip.en}
+                      </p>
+                    )) || (
+                      <p>{language === 'tr' ? 'Püf noktası bulunmuyor.' : 'No tips available.'}</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
