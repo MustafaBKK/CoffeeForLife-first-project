@@ -2,77 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: 'Inter', sans-serif;
-}
-
-/* Özel Scroll Bar Stilleri */
+/* Hide scrollbar for Chrome, Safari and Opera */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
+/* Hide scrollbar for IE, Edge and Firefox */
 .hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-/* Blog Kartları için Hover Efektleri */
-.blog-card {
-  transition: transform 0.3s ease-in-out;
+/* Custom styles */
+html {
+  scroll-behavior: smooth;
 }
 
-.blog-card:hover {
-  transform: translateY(-5px);
-}
-
-/* Modal Animasyonları */
-.modal-overlay {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.modal-content {
-  animation: slideUp 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Responsive Görüntü Stilleri */
-.image-container {
-  position: relative;
-  width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-}
-
-.image-container img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+body {
+  @apply bg-[#f8f3e7];
 }

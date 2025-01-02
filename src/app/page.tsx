@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -18,10 +18,6 @@ interface Recipe {
   image: string;
   description: string;
   recipe: string;
-  tips: Array<{
-    tr: string;
-    en: string;
-  }>;
 }
 
 const blogPosts: BlogPost[] = [
@@ -75,184 +71,143 @@ const blogPosts: BlogPost[] = [
   }
 ];
 
+const coffeeOrigins = [
+  {
+    name: "Arabica",
+    image: "/arabica.jpg",
+    description: "Dünya'nın en popüler kahve türü, yumuşak ve aromatik tadıyla bilinir."
+  },
+  {
+    name: "Robusta",
+    image: "/robusta.jpg",
+    description: "Güçlü ve yoğun tada sahip, yüksek kafeinli kahve türü."
+  },
+  {
+    name: "Liberica",
+    image: "/liberica.jpg",
+    description: "Nadir bulunan, meyvemsi ve çiçeksi aromaya sahip özel kahve türü."
+  },
+  {
+    name: "Brasil",
+    image: "/brasil.jpg",
+    description: "Düşük asidite, yoğun çikolata ve fındık notalarıyla tanınan yumuşak içimli kahve."
+  },
+  {
+    name: "Ethiopia",
+    image: "/ethiopia.jpg",
+    description: "Çiçeksi ve meyvemsi notalar, yüksek asidite ile kahvenin anavatanından gelen özel tat."
+  },
+  {
+    name: "Brasil Irmas Pereira",
+    image: "/brasil-irmas.jpg",
+    description: "Karamel tatlılığı, badem ve çikolata notaları ile öne çıkan, kadın üreticilerden gelen özel kahve."
+  },
+  {
+    name: "Colombia Monte Blanco",
+    image: "/colombia-monte.jpg",
+    description: "Yüksek rakımda yetiştirilen, şeftali ve bergamot notalarıyla zengin, dengeli asiditeye sahip kahve."
+  },
+  {
+    name: "Colombia El Mirador Koji",
+    image: "/colombia-mirador.jpg",
+    description: "Koji fermentasyonu ile işlenen, tropik meyve ve karamel notalarına sahip özel işlem kahve."
+  },
+  {
+    name: "Rwanda Kilimbi Nyamasheke",
+    image: "/rwanda-kilimbi.jpg",
+    description: "Böğürtlen ve narenciye notaları ile parlak asiditeye sahip, Rwanda'nın seçkin kahvelerinden."
+  }
+];
+
+const coffeeRecipes = [
+  {
+    name: "Türk Kahvesi",
+    image: "/turkish-coffee.jpg",
+    description: "Geleneksel Türk kahvesi hazırlama yöntemi.",
+    recipe: "İnce öğütülmüş kahve + su + isteğe bağlı şeker, cezve ile pişirilir"
+  },
+  {
+    name: "White Mocha",
+    image: "/white-mocha.jpg",
+    description: "Beyaz çikolata ve espresso'nun muhteşem uyumu.",
+    recipe: "Espresso + beyaz çikolata sosu + buharlanmış süt + süt köpüğü"
+  },
+  {
+    name: "Spanish Latte",
+    image: "/spanish-latte.jpg",
+    description: "Yoğunlaştırılmış süt ile hazırlanan özel latte.",
+    recipe: "Espresso + yoğunlaştırılmış süt + buharlanmış süt"
+  },
+  {
+    name: "Latte",
+    image: "/latte.jpg",
+    description: "Kadifemsi süt köpüğü ile hazırlanan klasik latte.",
+    recipe: "Espresso + buharlanmış süt + ince süt köpüğü"
+  },
+  {
+    name: "Cappuccino",
+    image: "/cappuccino.jpg",
+    description: "Eşit oranda espresso, süt ve süt köpüğü.",
+    recipe: "Espresso + buharlanmış süt + yoğun süt köpüğü"
+  },
+  {
+    name: "Chemex",
+    image: "/chemex.jpg",
+    description: "El yapımı filtre kahve demleme yöntemi.",
+    recipe: "30g kahve + 500ml su (94°C) + Chemex filtre kağıdı"
+  },
+  {
+    name: "V60 Pour Over",
+    image: "/v60.jpg",
+    description: "Japon tarzı damlatma yöntemi ile hazırlanan kahve.",
+    recipe: "22g kahve + 350ml su (92-96°C) + V60 filtre kağıdı"
+  },
+  {
+    name: "Cold Brew",
+    image: "/cold-brew-coffee.jpg",
+    description: "Soğuk demleme yöntemi ile hazırlanan kahve.",
+    recipe: "100g kahve + 1L su, 12-24 saat soğuk demleme"
+  }
+];
+
 export default function Home() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
-  const [isLoading, setIsLoading] = useState(true);
-  const [imageError, setImageError] = useState<{[key: string]: boolean}>({});
 
-  // Loading bitince isLoading'i false yap
-  setTimeout(() => {
-    setIsLoading(false);
-  }, 1000);
+  // İlk yüklemede localStorage'dan verileri al
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedPost = localStorage.getItem('selectedPost');
+      const savedRecipe = localStorage.getItem('selectedRecipe');
+      const savedLanguage = localStorage.getItem('language') as 'tr' | 'en';
 
-  // Görsel yüklenemezse fallback göster
-  const handleImageError = (imagePath: string) => {
-    setImageError(prev => ({...prev, [imagePath]: true}));
-  };
-
-  const coffeeOrigins = [
-    {
-      name: "Brasil Irmas Pereira",
-      description: language === 'tr' 
-        ? "Karamel tatlılığı, badem ve çikolata notaları ile öne çıkan, kadın üreticilerden gelen özel kahve."
-        : "A special coffee from women producers, featuring caramel sweetness, almond, and chocolate notes.",
-      image: "/brasil-irmas.jpg"
-    },
-    {
-      name: "Colombia Monte Blanco",
-      description: language === 'tr'
-        ? "Yüksek rakımda yetiştirilen, şeftali ve bergamot notalarıyla zengin, dengeli asiditeye sahip kahve."
-        : "High-altitude coffee with rich peach and bergamot notes, featuring balanced acidity.",
-      image: "/colombia-monte.jpg"
-    },
-    {
-      name: "Colombia El Mirador Koji",
-      description: language === 'tr'
-        ? "Koji fermentasyonu ile işlenen, tropik meyve ve karamel notalarına sahip özel işlem kahve."
-        : "A specially processed coffee with Koji fermentation, featuring tropical fruit and caramel notes.",
-      image: "/colombia-mirador.jpg"
-    },
-    {
-      name: "Rwanda Kilimbi Nyamasheke",
-      description: language === 'tr'
-        ? "Böğürtlen ve narenciye notaları ile parlak asiditeye sahip, Rwanda'nın seçkin kahvelerinden."
-        : "One of Rwanda's finest coffees with blackberry and citrus notes, featuring bright acidity.",
-      image: "/rwanda-kilimbi.jpg"
+      if (savedPost) setSelectedPost(JSON.parse(savedPost));
+      if (savedRecipe) setSelectedRecipe(JSON.parse(savedRecipe));
+      if (savedLanguage) setLanguage(savedLanguage);
     }
-  ];
+  }, []);
 
-  const coffeeRecipes: Recipe[] = [
-    {
-      name: "Türk Kahvesi",
-      image: "/turkish-coffee.jpg",
-      description: language === 'tr' ? "Geleneksel Türk kahvesi hazırlama yöntemi." : "Traditional Turkish coffee brewing method.",
-      recipe: "İnce öğütülmüş kahve + su + isteğe bağlı şeker, cezve ile pişirilir",
-      tips: [
-        {
-          tr: "Kahveyi çok karıştırmayın, köpüğü kaçar",
-          en: "Don't stir too much, it will lose its foam"
-        },
-        {
-          tr: "Kısık ateşte sabırla pişirin",
-          en: "Cook patiently on low heat"
-        }
-      ]
-    },
-    {
-      name: "White Mocha",
-      image: "/white-mocha.jpg",
-      description: language === 'tr' ? "Beyaz çikolata ve espresso'nun muhteşem uyumu." : "Perfect harmony of white chocolate and espresso.",
-      recipe: "Espresso + beyaz çikolata sosu + buharlanmış süt + süt köpüğü",
-      tips: [
-        {
-          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
-          en: "Avoid burning the milk, ideal temperature is 65°C"
-        },
-        {
-          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
-          en: "Use freshly ground coffee for best results"
-        }
-      ]
-    },
-    {
-      name: "Spanish Latte",
-      image: "/spanish-latte.jpg",
-      description: language === 'tr' ? "Yoğunlaştırılmış süt ile hazırlanan özel latte." : "Special latte prepared with condensed milk.",
-      recipe: "Espresso + yoğunlaştırılmış süt + buharlanmış süt",
-      tips: [
-        {
-          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
-          en: "Avoid burning the milk, ideal temperature is 65°C"
-        },
-        {
-          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
-          en: "Use freshly ground coffee for best results"
-        }
-      ]
-    },
-    {
-      name: "Latte",
-      image: "/latte.jpg",
-      description: language === 'tr' ? "Kadifemsi süt köpüğü ile hazırlanan klasik latte." : "Classic latte prepared with velvety milk foam.",
-      recipe: "Espresso + buharlanmış süt + ince süt köpüğü",
-      tips: [
-        {
-          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
-          en: "Avoid burning the milk, ideal temperature is 65°C"
-        },
-        {
-          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
-          en: "Use freshly ground coffee for best results"
-        }
-      ]
-    },
-    {
-      name: "Cappuccino",
-      image: "/cappuccino.jpg",
-      description: language === 'tr' ? "Eşit oranda espresso, süt ve süt köpüğü." : "Equal parts of espresso, milk, and milk foam.",
-      recipe: "Espresso + buharlanmış süt + yoğun süt köpüğü",
-      tips: [
-        {
-          tr: "Sütü yakmaktan kaçının, ideal sıcaklık 65°C",
-          en: "Avoid burning the milk, ideal temperature is 65°C"
-        },
-        {
-          tr: "En iyi sonuç için taze çekilmiş kahve kullanın",
-          en: "Use freshly ground coffee for best results"
-        }
-      ]
-    },
-    {
-      name: "Chemex",
-      image: "/chemex.jpg",
-      description: language === 'tr' ? "El yapımı filtre kahve demleme yöntemi." : "Handcrafted filter coffee brewing method.",
-      recipe: "30g kahve + 500ml su (94°C) + Chemex filtre kağıdı",
-      tips: [
-        {
-          tr: "Su sıcaklığı 92-96°C arasında olmalı",
-          en: "Water temperature should be 92-96°C"
-        },
-        {
-          tr: "Toplam demleme süresi 4-5 dakika olmalı",
-          en: "Total brewing time should be 4-5 minutes"
-        }
-      ]
-    },
-    {
-      name: "V60 Pour Over",
-      image: "/v60.jpg",
-      description: language === 'tr' ? "Japon tarzı damlatma yöntemi ile hazırlanan kahve." : "Coffee prepared with Japanese drip brewing method.",
-      recipe: "22g kahve + 350ml su (92-96°C) + V60 filtre kağıdı",
-      tips: [
-        {
-          tr: "Su sıcaklığı 92-96°C arasında olmalı",
-          en: "Water temperature should be 92-96°C"
-        },
-        {
-          tr: "Toplam demleme süresi 2.5-3 dakika olmalı",
-          en: "Total brewing time should be 2.5-3 minutes"
-        }
-      ]
-    },
-    {
-      name: "Cold Brew",
-      image: "/cold-brew-coffee.jpg",
-      description: language === 'tr' ? "Soğuk demleme yöntemi ile hazırlanan kahve." : "Coffee prepared with cold brewing method.",
-      recipe: "100g kahve + 1L su, 12-24 saat soğuk demleme",
-      tips: [
-        {
-          tr: "Kaba çekilmiş kahve kullanın",
-          en: "Use coarsely ground coffee"
-        },
-        {
-          tr: "Buzdolabında 12-24 saat demlemeye bırakın",
-          en: "Let it brew in the refrigerator for 12-24 hours"
-        }
-      ]
+  // State değişikliklerini localStorage'a kaydet
+  useEffect(() => {
+    if (selectedPost) {
+      localStorage.setItem('selectedPost', JSON.stringify(selectedPost));
+    } else {
+      localStorage.removeItem('selectedPost');
     }
-  ];
+  }, [selectedPost]);
+
+  useEffect(() => {
+    if (selectedRecipe) {
+      localStorage.setItem('selectedRecipe', JSON.stringify(selectedRecipe));
+    } else {
+      localStorage.removeItem('selectedRecipe');
+    }
+  }, [selectedRecipe]);
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+  }, [language]);
 
   return (
     <main className="min-h-screen bg-[#f8f3e7]">
@@ -311,21 +266,16 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section with Loading State */}
+      {/* Hero Section */}
       <section className="relative h-[90vh] flex items-center justify-center">
         <div className="absolute inset-0 z-0">
-          {isLoading ? (
-            <div className="w-full h-full bg-gray-300 animate-pulse" />
-          ) : (
-            <Image
-              src="/coffee-hero.jpg"
-              alt="Kahve"
-              fill
-              className="object-cover brightness-50"
-              priority
-              onError={() => handleImageError('/coffee-hero.jpg')}
-            />
-          )}
+          <Image
+            src="/coffee-hero.jpg"
+            alt="Kahve"
+            fill
+            className="object-cover brightness-50"
+            priority
+          />
         </div>
         <div className="relative z-10 text-center text-white px-4">
           <h1 className="text-5xl md:text-7xl font-bold mb-4">
@@ -347,11 +297,11 @@ export default function Home() {
         </h2>
         <div className="relative max-w-7xl mx-auto">
           <div className="overflow-x-auto pb-8 hide-scrollbar">
-            <div className="flex gap-8 w-max px-4">
-              {[...coffeeOrigins, ...coffeeOrigins, ...coffeeOrigins].map((coffee, index) => (
+            <div className="flex gap-8 w-max px-4 snap-x snap-mandatory">
+              {coffeeOrigins.map((coffee, index) => (
                 <div 
                   key={index} 
-                  className="bg-white rounded-lg shadow-lg overflow-hidden w-[350px] flex-shrink-0 transition-transform hover:scale-105"
+                  className="bg-white rounded-lg shadow-lg overflow-hidden w-[350px] flex-shrink-0 transition-transform hover:scale-105 snap-center"
                 >
                   <div className="h-48 relative">
                     <Image
@@ -374,18 +324,7 @@ export default function Home() {
           <button 
             onClick={() => {
               const container = document.querySelector('.overflow-x-auto');
-              if (container) {
-                container.scrollBy({ left: -400, behavior: 'smooth' });
-                // Ortadaki sete geldiğinde scroll pozisyonunu ayarla
-                if (container.scrollLeft <= 400) {
-                  setTimeout(() => {
-                    container.scrollTo({ 
-                      left: container.scrollWidth / 3, 
-                      behavior: 'auto' 
-                    });
-                  }, 500);
-                }
-              }
+              if (container) container.scrollBy({ left: -400, behavior: 'smooth' });
             }}
             className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors"
           >
@@ -394,18 +333,7 @@ export default function Home() {
           <button 
             onClick={() => {
               const container = document.querySelector('.overflow-x-auto');
-              if (container) {
-                container.scrollBy({ left: 400, behavior: 'smooth' });
-                // Ortadaki seti geçtiğinde scroll pozisyonunu ayarla
-                if (container.scrollLeft >= (container.scrollWidth / 3) * 2 - container.clientWidth) {
-                  setTimeout(() => {
-                    container.scrollTo({ 
-                      left: container.scrollWidth / 3, 
-                      behavior: 'auto' 
-                    });
-                  }, 500);
-                }
-              }
+              if (container) container.scrollBy({ left: 400, behavior: 'smooth' });
             }}
             className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors"
           >
@@ -414,37 +342,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kahve Tarifleri Section with Loading & Error States */}
+      {/* Kahve Tarifleri Section */}
       <section id="recipes" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-[#2c1810]">
             {language === 'tr' ? 'Kahve Tarifleri' : 'Coffee Recipes'}
-          </h2>
+        </h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {coffeeRecipes.map((recipe, index) => (
-              <div
+              <div 
                 key={index}
                 className="bg-[#f8f3e7] rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 cursor-pointer"
                 onClick={() => setSelectedRecipe(recipe)}
               >
-                <div className="h-48 relative">
-                  {isLoading ? (
-                    <div className="w-full h-full bg-gray-300 animate-pulse" />
-                  ) : (
-                    <Image
-                      src={imageError[recipe.image] ? '/fallback-coffee.jpg' : recipe.image}
-                      alt={recipe.name}
-                      fill
-                      className="object-cover"
-                      onError={() => handleImageError(recipe.image)}
-                    />
-                  )}
+              <div className="h-48 relative">
+                <Image
+                    src={recipe.image}
+                    alt={recipe.name}
+                  fill
+                  className="object-cover"
+                  priority={recipe.name === "Cappuccino"}
+                />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white">
                     {recipe.name}
                   </h3>
-                </div>
+              </div>
                 
                 <div className="p-4">
                   <p className="text-gray-700 text-sm mb-4">
@@ -454,15 +378,7 @@ export default function Home() {
                     className="w-full bg-[#d4a574] text-white py-2 px-4 rounded-full hover:bg-[#2c1810] transition-colors text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
-                      try {
-                        setSelectedRecipe(recipe);
-                      } catch (error) {
-                        console.error('Tarif seçilirken hata oluştu:', error);
-                        // Kullanıcıya nazik bir hata mesajı göster
-                        alert(language === 'tr' 
-                          ? 'Tarif yüklenirken bir hata oluştu. Lütfen tekrar deneyin.' 
-                          : 'An error occurred while loading the recipe. Please try again.');
-                      }
+                      setSelectedRecipe(recipe);
                     }}
                   >
                     {language === 'tr' ? 'Tarifi Gör' : 'View Recipe'}
@@ -470,7 +386,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </div>
+            </div>
         </div>
       </section>
 
@@ -501,7 +417,13 @@ export default function Home() {
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
                   <p className="text-gray-600 mb-4">{post.summary}</p>
-                  <button className="text-[#2c1810] font-semibold hover:text-[#8b4513] transition-colors">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPost(post);
+                    }}
+                    className="text-[#2c1810] font-semibold hover:text-[#8b4513] transition-colors"
+                  >
                     {language === 'tr' ? 'Devamını Oku' : 'Read More →'}
                   </button>
                 </div>
@@ -511,54 +433,320 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Recipe Modal with Error Handling */}
+      {/* Recipe Modal */}
       {selectedRecipe && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-[#2c1810]">{selectedRecipe.name}</h3>
-                <button 
-                  onClick={() => setSelectedRecipe(null)}
-                  className="text-gray-500 hover:text-[#2c1810]"
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+          onClick={() => {
+            setSelectedRecipe(null);
+            localStorage.removeItem('selectedRecipe');
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="relative h-64">
+              <Image
+                src={selectedRecipe.image}
+                alt={selectedRecipe.name}
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <h2 className="absolute bottom-4 left-6 text-3xl font-bold text-white">
+                {selectedRecipe.name}
+              </h2>
+                <button
+                onClick={() => {
+                  setSelectedRecipe(null);
+                  localStorage.removeItem('selectedRecipe');
+                }}
+                className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors"
                 >
-                  ✕
+                <span className="text-2xl">×</span>
                 </button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div>
+                <p className="text-gray-700 mb-4">
+                  {selectedRecipe.description}
+                </p>
               </div>
 
-              <div className="space-y-6">
-                {/* Recipe content with error handling */}
-                <div className="bg-[#f8f3e7] rounded-lg p-4">
-                  <h4 className="font-semibold text-[#2c1810] mb-3">
-                    {language === 'tr' ? 'Malzemeler' : 'Ingredients'}
-                  </h4>
-                  <div className="text-gray-600">
-                    {selectedRecipe.recipe.split('+').map((ingredient, idx) => (
-                      <p key={idx} className="flex items-center">
-                        <span className="text-[#d4a574] mr-2">•</span>
-                        {ingredient.trim()}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Tips with error handling */}
-                <div className="bg-[#f8f3e7] rounded-lg p-4">
-                  <h4 className="font-semibold text-[#2c1810] mb-3">
-                    {language === 'tr' ? 'Püf Noktaları' : 'Tips'}
-                  </h4>
-                  <div className="text-gray-600">
-                    {selectedRecipe.tips?.map((tip, idx) => (
-                      <p key={idx} className="flex items-center">
-                        <span className="text-[#d4a574] mr-2">•</span>
-                        {language === 'tr' ? tip.tr : tip.en}
-                      </p>
-                    )) || (
-                      <p>{language === 'tr' ? 'Püf noktası bulunmuyor.' : 'No tips available.'}</p>
-                    )}
-                  </div>
-                </div>
+              {/* Malzemeler */}
+              <div className="bg-[#f8f3e7] rounded-lg p-4">
+                <h4 className="font-semibold text-[#2c1810] mb-3">
+                  {language === 'tr' ? 'Malzemeler' : 'Ingredients'}
+                </h4>
+                <ul className="text-gray-600 space-y-2">
+                  {selectedRecipe.recipe.split('+').map((ingredient, idx) => (
+                    <li key={idx} className="flex items-center">
+                      <span className="text-[#d4a574] mr-2">•</span>
+                      {ingredient.trim()}
+                    </li>
+                  ))}
+                </ul>
               </div>
+
+              {/* Hazırlanış */}
+              <div className="bg-[#f8f3e7] rounded-lg p-4">
+                <h4 className="font-semibold text-[#2c1810] mb-3">
+                  {language === 'tr' ? 'Hazırlanış' : 'Instructions'}
+                </h4>
+                {selectedRecipe.name === "Türk Kahvesi" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr' 
+                        ? "Kişi başı bir kahve fincanı su cezveye eklenir"
+                        : "Add one coffee cup of water per person to the cezve"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "Her fincan için 2 tatlı kaşığı kahve ve isteğe göre şeker eklenir"
+                        : "Add 2 teaspoons of coffee and sugar (optional) per cup"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "Kısık ateşte karıştırarak pişirilir"
+                        : "Cook on low heat while stirring"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Köpürmeye başlayınca fincanlara pay edilir"
+                        : "When it starts to foam, distribute to cups"}
+                    </li>
+                  </ol>
+                ) : selectedRecipe.name === "V60 Pour Over" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr'
+                        ? "Filtreyi ıslatın ve ön-ısıtma yapın"
+                        : "Wet the filter and pre-heat"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "Kahveyi orta-ince öğütün ve filtreye ekleyin"
+                        : "Grind coffee medium-fine and add to filter"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "İlk demleme için 50ml su ekleyip 30 saniye bekleyin"
+                        : "Add 50ml water for blooming and wait 30 seconds"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Dairesel hareketlerle kalan suyu ekleyin"
+                        : "Add remaining water in circular motions"}
+                    </li>
+                  </ol>
+                ) : selectedRecipe.name === "Spanish Latte" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr'
+                        ? "Espresso'yu hazırlayın"
+                        : "Prepare the espresso"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "Yoğunlaştırılmış sütü bardağın dibine ekleyin"
+                        : "Add condensed milk to the bottom of the glass"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "Espresso'yu yavaşça ekleyin"
+                        : "Slowly pour in the espresso"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Buharlanmış sütü üzerine ekleyin"
+                        : "Top with steamed milk"}
+                    </li>
+                  </ol>
+                ) : selectedRecipe.name === "White Mocha" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr'
+                        ? "Bardağın dibine beyaz çikolata sosunu ekleyin"
+                        : "Add white chocolate sauce to the bottom of the cup"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "Espresso'yu hazırlayıp sosun üzerine ekleyin"
+                        : "Prepare espresso and pour over the sauce"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "Karıştırarak sosun erimesini sağlayın"
+                        : "Stir to dissolve the sauce"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Buharlanmış süt ve süt köpüğü ile tamamlayın"
+                        : "Finish with steamed milk and milk foam"}
+                    </li>
+                  </ol>
+                ) : selectedRecipe.name === "Cappuccino" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr'
+                        ? "Espresso'yu hazırlayın"
+                        : "Prepare the espresso"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "Sütü buharla ısıtın ve köpürtün"
+                        : "Steam and froth the milk"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "Espresso'nun üzerine buharlanmış sütü ekleyin"
+                        : "Pour steamed milk over the espresso"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Yoğun süt köpüğü ile tamamlayın"
+                        : "Top with thick milk foam"}
+                    </li>
+                  </ol>
+                ) : (
+                  <p className="text-gray-600">
+                    {language === 'tr'
+                      ? "Tüm malzemeleri belirtilen sırayla ekleyip hazırlayın"
+                      : "Add all ingredients in the specified order and prepare"}
+                  </p>
+                )}
+              </div>
+
+              {/* Püf Noktaları */}
+              <div className="bg-[#f8f3e7] rounded-lg p-4">
+                <h4 className="font-semibold text-[#2c1810] mb-3">
+                  {language === 'tr' ? 'Püf Noktaları' : 'Tips'}
+                </h4>
+                <ul className="text-gray-600">
+                  {selectedRecipe.name === "Türk Kahvesi" ? (
+                    <>
+                      <li className="flex items-center mb-2">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr'
+                          ? "Kahveyi çok karıştırmayın, köpüğü kaçar"
+                          : "Don't stir too much, it will lose its foam"}
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr'
+                          ? "Kısık ateşte sabırla pişirin"
+                          : "Cook patiently on low heat"}
+                      </li>
+                    </>
+                  ) : selectedRecipe.name === "V60 Pour Over" ? (
+                    <>
+                      <li className="flex items-center mb-2">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr'
+                          ? "Su sıcaklığı 92-96°C arasında olmalı"
+                          : "Water temperature should be 92-96°C"}
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr'
+                          ? "Toplam demleme süresi 2.5-3 dakika olmalı"
+                          : "Total brewing time should be 2.5-3 minutes"}
+                      </li>
+                    </>
+                  ) : selectedRecipe.name === "Spanish Latte" || selectedRecipe.name === "White Mocha" || selectedRecipe.name === "Cappuccino" ? (
+                    <>
+                      <li className="flex items-center mb-2">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr'
+                          ? "Sütü yakmaktan kaçının, ideal sıcaklık 65°C"
+                          : "Avoid burning the milk, ideal temperature is 65°C"}
+                      </li>
+                      <li className="flex items-center">
+                        <span className="text-[#d4a574] mr-2">•</span>
+                        {language === 'tr'
+                          ? "En iyi sonuç için taze çekilmiş kahve kullanın"
+                          : "Use freshly ground coffee for best results"}
+                      </li>
+                    </>
+                  ) : (
+                    <li className="flex items-center">
+                      <span className="text-[#d4a574] mr-2">•</span>
+                      {language === 'tr'
+                        ? "En iyi sonuç için taze çekilmiş kahve kullanın"
+                        : "Use freshly ground coffee for best results"}
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Blog Post Modal */}
+      {selectedPost && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          onClick={() => {
+            setSelectedPost(null);
+            localStorage.removeItem('selectedPost');
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="relative h-64">
+              <Image
+                src={selectedPost.image}
+                alt={selectedPost.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-2 text-[#2c1810]">{selectedPost.title}</h2>
+              <div className="flex items-center text-sm text-gray-500 mb-4">
+                <span>{selectedPost.date}</span>
+                <span className="mx-2">•</span>
+                <span>{selectedPost.readTime}</span>
+              </div>
+              <div className="prose max-w-none">
+                {selectedPost.content.split('\n\n').map((paragraph, index) => (
+                  <p key={index} className="mb-4 text-gray-700">{paragraph.trim()}</p>
+                ))}
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedPost(null);
+                  localStorage.removeItem('selectedPost');
+                }}
+                className="mt-6 px-4 py-2 bg-[#d4a574] text-white rounded-full hover:bg-[#2c1810] transition-colors"
+              >
+                {language === 'tr' ? 'Kapat' : 'Close'}
+              </button>
             </div>
           </div>
         </div>
