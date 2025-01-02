@@ -174,6 +174,7 @@ export default function Home() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // İlk yüklemede localStorage'dan verileri al
   useEffect(() => {
@@ -215,25 +216,21 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#2c1810] bg-opacity-90 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Sol Menü */}
-            <div className="flex items-center gap-8">
+            {/* Logo - Her zaman görünür */}
+            <span className="flex items-center gap-3 text-lg">
+              <span className="text-[#d4a574] text-xl">♤</span>
+              <span className="font-serif tracking-wider text-[#e5b585] hidden sm:inline">Made by Mustafa</span>
+              <span className="text-[#d4a574] text-xl">♤</span>
+            </span>
+
+            {/* Desktop Menü */}
+            <div className="hidden md:flex items-center gap-8">
               <a href="#coffee-types" className="hover:text-[#d4a574] transition-colors">
                 {language === 'tr' ? 'Kahve Çeşitleri' : 'Coffee Types'}
               </a>
               <Link href="/discover" className="px-4 py-2 bg-[#d4a574] text-[#2c1810] rounded-full hover:bg-[#e5b585] transition-colors font-medium">
                 {language === 'tr' ? 'Keşfet' : 'Discover'}
               </Link>
-            </div>
-
-            {/* Orta Logo */}
-            <span className="flex items-center gap-3 text-lg">
-              <span className="text-[#d4a574] text-xl">♤</span>
-              <span className="font-serif tracking-wider text-[#e5b585]">Made by Mustafa</span>
-              <span className="text-[#d4a574] text-xl">♤</span>
-            </span>
-
-            {/* Sağ Menü ve Dil Seçimi */}
-            <div className="flex items-center gap-8">
               <a href="#recipes" className="hover:text-[#d4a574] transition-colors">
                 {language === 'tr' ? 'Tarifler' : 'Recipes'}
               </a>
@@ -252,6 +249,79 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => setLanguage('en')}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    language === 'en'
+                      ? 'bg-[#d4a574] text-[#2c1810]'
+                      : 'text-white/70 hover:text-white'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+            </div>
+
+            {/* Mobil Menü Butonu */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-[#3a2218] transition-colors"
+            >
+              {isMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          {/* Mobil Menü */}
+          <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} py-4 space-y-4 border-t border-[#3a2218]`}>
+            <a 
+              href="#coffee-types" 
+              className="block px-4 py-2 hover:bg-[#3a2218] rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {language === 'tr' ? 'Kahve Çeşitleri' : 'Coffee Types'}
+            </a>
+            <Link 
+              href="/discover" 
+              className="block px-4 py-2 hover:bg-[#3a2218] rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {language === 'tr' ? 'Keşfet' : 'Discover'}
+            </Link>
+            <a 
+              href="#recipes" 
+              className="block px-4 py-2 hover:bg-[#3a2218] rounded-lg transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {language === 'tr' ? 'Tarifler' : 'Recipes'}
+            </a>
+            
+            {/* Mobil Dil Seçimi */}
+            <div className="px-4 py-2">
+              <div className="flex items-center gap-2 bg-[#1a110b] rounded-full p-1 w-fit">
+                <button
+                  onClick={() => {
+                    setLanguage('tr');
+                    setIsMenuOpen(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    language === 'tr'
+                      ? 'bg-[#d4a574] text-[#2c1810]'
+                      : 'text-white/70 hover:text-white'
+                  }`}
+                >
+                  TR
+                </button>
+                <button
+                  onClick={() => {
+                    setLanguage('en');
+                    setIsMenuOpen(false);
+                  }}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
                     language === 'en'
                       ? 'bg-[#d4a574] text-[#2c1810]'
