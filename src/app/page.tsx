@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface BlogPost {
   title: string;
@@ -20,172 +21,245 @@ interface Recipe {
   recipe: string;
 }
 
-const blogPosts: BlogPost[] = [
-  {
-    title: "Kahvenin Sağlığa Faydaları",
-    date: "15 Mayıs 2024",
-    readTime: "5 dk okuma",
-    summary: "Düzenli kahve tüketiminin vücut ve zihin sağlığına olan olumlu etkileri.",
-    image: "/coffee-benefits.jpg",
-    content: `
-      Kahve, sadece lezzetli bir içecek değil, aynı zamanda sağlığımıza birçok faydası olan doğal bir kaynaktır. Bilimsel araştırmalar, düzenli kahve tüketiminin çeşitli sağlık yararları sağladığını göstermektedir.
-
-      Antioksidan Kaynağı: Kahve, polifenoller başta olmak üzere güçlü antioksidanlar içerir. Bu bileşikler, vücudumuzu serbest radikallere karşı korur ve yaşlanma karşıtı etki gösterir. Düzenli kahve tüketimi, hücre hasarını önlemeye yardımcı olur.
-
-      Metabolizma ve Enerji: Kahvenin içerdiği kafein, metabolizma hızını artırır ve yağ yakımını destekler. Fiziksel performansı artırarak egzersiz verimliliğini yükseltir. Ayrıca enerji seviyelerini artırarak günlük aktivitelerde daha dinç olmamızı sağlar.
-
-      Zihinsel Performans: Kahve, dikkat ve konsantrasyonu artırır, hafızayı güçlendirir. Düzenli kahve tüketimi, bilişsel fonksiyonların korunmasına yardımcı olur ve yaşa bağlı mental gerilemeyi yavaşlatabilir.
-
-      Karaciğer Sağlığı: Araştırmalar, kahve tüketiminin karaciğer sağlığını desteklediğini ve karaciğer hastalıkları riskini azaltabileceğini göstermektedir.
-    `
-  },
-  {
-    title: "Kahve Demleme Sanatı",
-    date: "12 Mayıs 2024",
-    readTime: "4 dk okuma",
-    summary: "Farklı demleme teknikleri ve püf noktaları.",
-    image: "/brewing-art.jpg",
-    content: `
-      Kahve demleme, basit gibi görünse de aslında ince ayarlar ve dikkat gerektiren bir sanattır. Her bir demleme yöntemi, kahvenin farklı özelliklerini ortaya çıkarır.
-
-      Pour-over yöntemi, kahvenin tüm aromalarını açığa çıkaran hassas bir tekniktir. Su sıcaklığı, kahve granül boyutu ve demleme süresi gibi faktörler, final tadını önemli ölçüde etkiler.
-
-      French Press, kahvenin yağlarını ve zengin tatlarını koruyan geleneksel bir yöntemdir. Doğru bekleme süresi ve presleme tekniği, mükemmel bir fincan için kritik öneme sahiptir.
-
-      Espresso hazırlama ise başlı başına bir uzmanlık gerektirir. Doğru basınç, su sıcaklığı ve öğütme inceliği, kusursuz bir espresso için şarttır.
-    `
-  },
-  {
-    title: "Japon Kahve Kültürü",
-    date: "10 Mayıs 2024",
-    readTime: "6 dk okuma",
-    summary: "Japonya'nın benzersiz kahve kültürü ve modern demleme teknikleri.",
-    image: "/japan-coffee.jpg",
-    content: `
-      Japonya'nın kahve kültürü, geleneksel çay seremonisinin inceliği ile modern kahve demleme tekniklerinin mükemmel bir birleşimidir. 1800'lerin sonlarında başlayan kahve serüveni, bugün dünya kahve kültürüne önemli katkılar sağlamaktadır.
-
-      Japon kahve ustalarının geliştirdiği pour-over yöntemi, dünya çapında kabul görmüş bir demleme tekniğidir. Bu yöntem, her bir damla suyun kahve ile mükemmel temasını sağlayarak, en iyi aromayı ortaya çıkarır.
-
-      Tokyo'nun dar sokaklarındaki küçük kahve dükkanlarından, modern üçüncü dalga kahvecilere kadar, Japon kahve kültürü sürekli evrim geçirmektedir. Ancak değişmeyen tek şey, mükemmeliyetçilik ve kalite arayışıdır.
-    `
-  }
-];
-
-const coffeeOrigins = [
-  {
-    name: "Arabica",
-    image: "/arabica.jpg",
-    description: "Dünya'nın en popüler kahve türü, yumuşak ve aromatik tadıyla bilinir."
-  },
-  {
-    name: "Robusta",
-    image: "/robusta.jpg",
-    description: "Güçlü ve yoğun tada sahip, yüksek kafeinli kahve türü."
-  },
-  {
-    name: "Liberica",
-    image: "/liberica.jpg",
-    description: "Nadir bulunan, meyvemsi ve çiçeksi aromaya sahip özel kahve türü."
-  },
-  {
-    name: "Brasil",
-    image: "/brasil.jpg",
-    description: "Düşük asidite, yoğun çikolata ve fındık notalarıyla tanınan yumuşak içimli kahve."
-  },
-  {
-    name: "Ethiopia",
-    image: "/ethiopia.jpg",
-    description: "Çiçeksi ve meyvemsi notalar, yüksek asidite ile kahvenin anavatanından gelen özel tat."
-  },
-  {
-    name: "Brasil Irmas Pereira",
-    image: "/brasil-irmas.jpg",
-    description: "Karamel tatlılığı, badem ve çikolata notaları ile öne çıkan, kadın üreticilerden gelen özel kahve."
-  },
-  {
-    name: "Colombia Monte Blanco",
-    image: "/colombia-monte.jpg",
-    description: "Yüksek rakımda yetiştirilen, şeftali ve bergamot notalarıyla zengin, dengeli asiditeye sahip kahve."
-  },
-  {
-    name: "Colombia El Mirador Koji",
-    image: "/colombia-mirador.jpg",
-    description: "Koji fermentasyonu ile işlenen, tropik meyve ve karamel notalarına sahip özel işlem kahve."
-  },
-  {
-    name: "Rwanda Kilimbi Nyamasheke",
-    image: "/rwanda-kilimbi.jpg",
-    description: "Böğürtlen ve narenciye notaları ile parlak asiditeye sahip, Rwanda'nın seçkin kahvelerinden."
-  }
-];
-
-const coffeeRecipes = [
-  {
-    name: "Türk Kahvesi",
-    image: "/turkish-coffee.jpg",
-    description: "Geleneksel Türk kahvesi hazırlama yöntemi.",
-    recipe: "İnce öğütülmüş kahve + su + isteğe bağlı şeker, cezve ile pişirilir"
-  },
-  {
-    name: "White Mocha",
-    image: "/white-mocha.jpg",
-    description: "Beyaz çikolata ve espresso'nun muhteşem uyumu.",
-    recipe: "Espresso + beyaz çikolata sosu + buharlanmış süt + süt köpüğü"
-  },
-  {
-    name: "Spanish Latte",
-    image: "/spanish-latte.jpg",
-    description: "Yoğunlaştırılmış süt ile hazırlanan özel latte.",
-    recipe: "Espresso + yoğunlaştırılmış süt + buharlanmış süt"
-  },
-  {
-    name: "Latte",
-    image: "/latte.jpg",
-    description: "Kadifemsi süt köpüğü ile hazırlanan klasik latte.",
-    recipe: "Espresso + buharlanmış süt + ince süt köpüğü"
-  },
-  {
-    name: "Cappuccino",
-    image: "/cappuccino.jpg",
-    description: "Eşit oranda espresso, süt ve süt köpüğü.",
-    recipe: "Espresso + buharlanmış süt + yoğun süt köpüğü"
-  },
-  {
-    name: "Chemex",
-    image: "/chemex.jpg",
-    description: "El yapımı filtre kahve demleme yöntemi.",
-    recipe: "30g kahve + 500ml su (94°C) + Chemex filtre kağıdı"
-  },
-  {
-    name: "V60 Pour Over",
-    image: "/v60.jpg",
-    description: "Japon tarzı damlatma yöntemi ile hazırlanan kahve.",
-    recipe: "22g kahve + 350ml su (92-96°C) + V60 filtre kağıdı"
-  },
-  {
-    name: "Cold Brew",
-    image: "/cold-brew-coffee.jpg",
-    description: "Soğuk demleme yöntemi ile hazırlanan kahve.",
-    recipe: "100g kahve + 1L su, 12-24 saat soğuk demleme"
-  }
-];
-
 export default function Home() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [language, setLanguage] = useState<'tr' | 'en'>('tr');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
+
+  // Sabit veriler component içinde tanımlanıyor
+  const blogPosts: BlogPost[] = [
+    {
+      title: language === 'tr' ? "Kahvenin Sağlığa Faydaları" : "Health Benefits of Coffee",
+      date: language === 'tr' ? "15 Mayıs 2024" : "May 15, 2024",
+      readTime: language === 'tr' ? "5 dk okuma" : "5 min read",
+      summary: language === 'tr'
+        ? "Düzenli kahve tüketiminin vücut ve zihin sağlığına olan olumlu etkileri."
+        : "Positive effects of regular coffee consumption on body and mind health.",
+      image: "/coffee-benefits.jpg",
+      content: language === 'tr'
+        ? `Kahve, sadece lezzetli bir içecek değil, aynı zamanda sağlığımıza birçok faydası olan doğal bir kaynaktır. Bilimsel araştırmalar, düzenli kahve tüketiminin çeşitli sağlık yararları sağladığını göstermektedir.
+
+          Antioksidan Kaynağı: Kahve, polifenoller başta olmak üzere güçlü antioksidanlar içerir. Bu bileşikler, vücudumuzu serbest radikallere karşı korur ve yaşlanma karşıtı etki gösterir. Düzenli kahve tüketimi, hücre hasarını önlemeye yardımcı olur.
+
+          Metabolizma ve Enerji: Kahvenin içerdiği kafein, metabolizma hızını artırır ve yağ yakımını destekler. Fiziksel performansı artırarak egzersiz verimliliğini yükseltir. Ayrıca enerji seviyelerini artırarak günlük aktivitelerde daha dinç olmamızı sağlar.
+
+          Zihinsel Performans: Kahve, dikkat ve konsantrasyonu artırır, hafızayı güçlendirir. Düzenli kahve tüketimi, bilişsel fonksiyonların korunmasına yardımcı olur ve yaşa bağlı mental gerilemeyi yavaşlatabilir.
+
+          Karaciğer Sağlığı: Araştırmalar, kahve tüketiminin karaciğer sağlığını desteklediğini ve karaciğer hastalıkları riskini azaltabileceğini göstermektedir.`
+        : `Coffee is not just a delicious beverage, but also a natural source with many health benefits. Scientific research shows that regular coffee consumption provides various health benefits.
+
+          Antioxidant Source: Coffee contains powerful antioxidants, especially polyphenols. These compounds protect our body against free radicals and show anti-aging effects. Regular coffee consumption helps prevent cell damage.
+
+          Metabolism and Energy: The caffeine in coffee increases metabolism rate and supports fat burning. It enhances physical performance and exercise efficiency. It also increases energy levels, making us more vigorous in daily activities.
+
+          Mental Performance: Coffee improves attention and concentration, strengthens memory. Regular coffee consumption helps maintain cognitive functions and may slow down age-related mental decline.
+
+          Liver Health: Research shows that coffee consumption supports liver health and may reduce the risk of liver diseases.`
+    },
+    {
+      title: language === 'tr' ? "Kahve Demleme Sanatı" : "The Art of Coffee Brewing",
+      date: language === 'tr' ? "12 Mayıs 2024" : "May 12, 2024",
+      readTime: language === 'tr' ? "4 dk okuma" : "4 min read",
+      summary: language === 'tr'
+        ? "Farklı demleme teknikleri ve püf noktaları."
+        : "Different brewing techniques and tips.",
+      image: "/brewing-art.jpg",
+      content: language === 'tr'
+        ? `Kahve demleme, basit gibi görünse de aslında ince ayarlar ve dikkat gerektiren bir sanattır. Her bir demleme yöntemi, kahvenin farklı özelliklerini ortaya çıkarır.
+
+          Pour-over yöntemi, kahvenin tüm aromalarını açığa çıkaran hassas bir tekniktir. Su sıcaklığı, kahve granül boyutu ve demleme süresi gibi faktörler, final tadını önemli ölçüde etkiler.
+
+          French Press, kahvenin yağlarını ve zengin tatlarını koruyan geleneksel bir yöntemdir. Doğru bekleme süresi ve presleme tekniği, mükemmel bir fincan için kritik öneme sahiptir.
+
+          Espresso hazırlama ise başlı başına bir uzmanlık gerektirir. Doğru basınç, su sıcaklığı ve öğütme inceliği, kusursuz bir espresso için şarttır.`
+        : `Coffee brewing, although it seems simple, is an art that requires fine adjustments and attention. Each brewing method brings out different characteristics of coffee.
+
+          The pour-over method is a precise technique that reveals all the aromas of coffee. Factors such as water temperature, coffee particle size, and brewing time significantly affect the final taste.
+
+          French Press is a traditional method that preserves coffee oils and rich flavors. The correct steeping time and pressing technique are critical for a perfect cup.
+
+          Espresso preparation requires expertise in itself. Correct pressure, water temperature, and grinding fineness are essential for a perfect espresso.`
+    },
+    {
+      title: language === 'tr' ? "Japon Kahve Kültürü" : "Japanese Coffee Culture",
+      date: language === 'tr' ? "10 Mayıs 2024" : "May 10, 2024",
+      readTime: language === 'tr' ? "6 dk okuma" : "6 min read",
+      summary: language === 'tr'
+        ? "Japonya'nın benzersiz kahve kültürü ve modern demleme teknikleri."
+        : "Japan's unique coffee culture and modern brewing techniques.",
+      image: "/japan-coffee.jpg",
+      content: language === 'tr'
+        ? `Japonya'nın kahve kültürü, geleneksel çay seremonisinin inceliği ile modern kahve demleme tekniklerinin mükemmel bir birleşimidir. 1800'lerin sonlarında başlayan kahve serüveni, bugün dünya kahve kültürüne önemli katkılar sağlamaktadır.
+
+          Japon kahve ustalarının geliştirdiği pour-over yöntemi, dünya çapında kabul görmüş bir demleme tekniğidir. Bu yöntem, her bir damla suyun kahve ile mükemmel temasını sağlayarak, en iyi aromayı ortaya çıkarır.
+
+          Tokyo'nun dar sokaklarındaki küçük kahve dükkanlarından, modern üçüncü dalga kahvecilere kadar, Japon kahve kültürü sürekli evrim geçirmektedir. Ancak değişmeyen tek şey, mükemmeliyetçilik ve kalite arayışıdır.`
+        : `Japanese coffee culture is a perfect blend of traditional tea ceremony finesse and modern coffee brewing techniques. The coffee journey that began in the late 1800s makes significant contributions to world coffee culture today.
+
+          The pour-over method developed by Japanese coffee masters is a globally accepted brewing technique. This method ensures perfect contact between each drop of water and coffee, bringing out the best aroma.
+
+          From small coffee shops in Tokyo's narrow streets to modern third-wave coffee shops, Japanese coffee culture is constantly evolving. However, the one thing that remains unchanged is the pursuit of perfection and quality.`
+    }
+  ];
+
+  const coffeeOrigins = [
+    {
+      name: "Arabica",
+      image: "/arabica.jpg",
+      description: language === 'tr' 
+        ? "Dünya'nın en popüler kahve türü, yumuşak ve aromatik tadıyla bilinir."
+        : "World's most popular coffee type, known for its smooth and aromatic taste."
+    },
+    {
+      name: "Robusta",
+      image: "/robusta.jpg",
+      description: language === 'tr'
+        ? "Güçlü ve yoğun tada sahip, yüksek kafeinli kahve türü."
+        : "High caffeine coffee type with strong and intense taste."
+    },
+    {
+      name: "Liberica",
+      image: "/liberica.jpg",
+      description: language === 'tr'
+        ? "Nadir bulunan, meyvemsi ve çiçeksi aromaya sahip özel kahve türü."
+        : "Rare coffee type with fruity and floral aroma."
+    },
+    {
+      name: "Brasil",
+      image: "/brasil.jpg",
+      description: language === 'tr'
+        ? "Düşük asidite, yoğun çikolata ve fındık notalarıyla tanınan yumuşak içimli kahve."
+        : "Smooth coffee known for its low acidity, intense chocolate and nutty notes."
+    },
+    {
+      name: "Ethiopia",
+      image: "/ethiopia.jpg",
+      description: language === 'tr'
+        ? "Çiçeksi ve meyvemsi notalar, yüksek asidite ile kahvenin anavatanından gelen özel tat."
+        : "Special taste from the homeland of coffee with floral and fruity notes, high acidity."
+    },
+    {
+      name: "Brasil Irmas Pereira",
+      image: "/brasil-irmas.jpg",
+      description: language === 'tr'
+        ? "Karamel tatlılığı, badem ve çikolata notaları ile öne çıkan, kadın üreticilerden gelen özel kahve."
+        : "Special coffee from women producers, featuring caramel sweetness, almond and chocolate notes."
+    },
+    {
+      name: "Colombia Monte Blanco",
+      image: "/colombia-monte.jpg",
+      description: language === 'tr'
+        ? "Yüksek rakımda yetiştirilen, şeftali ve bergamot notalarıyla zengin, dengeli asiditeye sahip kahve."
+        : "High-altitude coffee with rich peach and bergamot notes, balanced acidity."
+    },
+    {
+      name: "Colombia El Mirador Koji",
+      image: "/colombia-mirador.jpg",
+      description: language === 'tr'
+        ? "Koji fermentasyonu ile işlenen, tropik meyve ve karamel notalarına sahip özel işlem kahve."
+        : "Specially processed coffee with Koji fermentation, featuring tropical fruit and caramel notes."
+    },
+    {
+      name: "Rwanda Kilimbi Nyamasheke",
+      image: "/rwanda-kilimbi.jpg",
+      description: language === 'tr'
+        ? "Böğürtlen ve narenciye notaları ile parlak asiditeye sahip, Rwanda'nın seçkin kahvelerinden."
+        : "One of Rwanda's finest coffees with blackberry and citrus notes, bright acidity."
+    }
+  ];
+
+  const coffeeRecipes = [
+    {
+      name: language === 'tr' ? "Türk Kahvesi" : "Turkish Coffee",
+      image: "/turkish-coffee.jpg",
+      description: language === 'tr'
+        ? "Geleneksel Türk kahvesi hazırlama yöntemi."
+        : "Traditional Turkish coffee brewing method.",
+      recipe: language === 'tr'
+        ? "İnce öğütülmüş kahve + su + isteğe bağlı şeker, cezve ile pişirilir"
+        : "Finely ground coffee + water + optional sugar, brewed in cezve"
+    },
+    {
+      name: "White Mocha",
+      image: "/white-mocha.jpg",
+      description: language === 'tr'
+        ? "Beyaz çikolata ve espresso'nun muhteşem uyumu."
+        : "Perfect harmony of white chocolate and espresso.",
+      recipe: language === 'tr'
+        ? "Espresso + beyaz çikolata sosu + buharlanmış süt + süt köpüğü"
+        : "Espresso + white chocolate sauce + steamed milk + milk foam"
+    },
+    {
+      name: "Spanish Latte",
+      image: "/spanish-latte.jpg",
+      description: language === 'tr'
+        ? "Yoğunlaştırılmış süt ile hazırlanan özel latte."
+        : "Special latte prepared with condensed milk.",
+      recipe: language === 'tr'
+        ? "Espresso + yoğunlaştırılmış süt + buharlanmış süt"
+        : "Espresso + condensed milk + steamed milk"
+    },
+    {
+      name: "Latte",
+      image: "/latte.jpg",
+      description: language === 'tr'
+        ? "Kadifemsi süt köpüğü ile hazırlanan klasik latte."
+        : "Classic latte prepared with velvety milk foam.",
+      recipe: language === 'tr'
+        ? "Espresso + buharlanmış süt + ince süt köpüğü"
+        : "Espresso + steamed milk + thin milk foam"
+    },
+    {
+      name: "Cappuccino",
+      image: "/cappuccino.jpg",
+      description: language === 'tr'
+        ? "Eşit oranda espresso, süt ve süt köpüğü."
+        : "Equal parts of espresso, milk and milk foam.",
+      recipe: language === 'tr'
+        ? "Espresso + buharlanmış süt + yoğun süt köpüğü"
+        : "Espresso + steamed milk + thick milk foam"
+    },
+    {
+      name: "Chemex",
+      image: "/chemex.jpg",
+      description: language === 'tr'
+        ? "El yapımı filtre kahve demleme yöntemi."
+        : "Handcrafted filter coffee brewing method.",
+      recipe: language === 'tr'
+        ? "30g kahve + 500ml su (94°C) + Chemex filtre kağıdı"
+        : "30g coffee + 500ml water (94°C) + Chemex filter paper"
+    },
+    {
+      name: "V60 Pour Over",
+      image: "/v60.jpg",
+      description: language === 'tr'
+        ? "Japon tarzı damlatma yöntemi ile hazırlanan kahve."
+        : "Coffee prepared with Japanese-style drip method.",
+      recipe: language === 'tr'
+        ? "22g kahve + 350ml su (92-96°C) + V60 filtre kağıdı"
+        : "22g coffee + 350ml water (92-96°C) + V60 filter paper"
+    },
+    {
+      name: "Cold Brew",
+      image: "/cold-brew-coffee.jpg",
+      description: language === 'tr'
+        ? "Soğuk demleme yöntemi ile hazırlanan kahve."
+        : "Coffee prepared with cold brewing method.",
+      recipe: language === 'tr'
+        ? "100g kahve + 1L su, 12-24 saat soğuk demleme"
+        : "100g coffee + 1L water, 12-24 hours cold brewing"
+    }
+  ];
 
   // İlk yüklemede localStorage'dan verileri al
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedPost = localStorage.getItem('selectedPost');
       const savedRecipe = localStorage.getItem('selectedRecipe');
-      const savedLanguage = localStorage.getItem('language') as 'tr' | 'en';
 
       if (savedPost) setSelectedPost(JSON.parse(savedPost));
       if (savedRecipe) setSelectedRecipe(JSON.parse(savedRecipe));
-      if (savedLanguage) setLanguage(savedLanguage);
     }
   }, []);
 
@@ -205,10 +279,6 @@ export default function Home() {
       localStorage.removeItem('selectedRecipe');
     }
   }, [selectedRecipe]);
-
-  useEffect(() => {
-    localStorage.setItem('language', language);
-  }, [language]);
 
   return (
     <main className="min-h-screen bg-[#f8f3e7]">
