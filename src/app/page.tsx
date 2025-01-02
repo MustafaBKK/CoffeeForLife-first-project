@@ -216,15 +216,15 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#2c1810] bg-opacity-90 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Logo - Her zaman görünür */}
+            {/* Logo */}
             <span className="flex items-center gap-3 text-lg">
               <span className="text-[#d4a574] text-xl">♤</span>
-              <span className="font-serif tracking-wider text-[#e5b585] hidden sm:inline">Made by Mustafa</span>
+              <span className="font-serif tracking-wider text-[#e5b585] logo-text">Made by Mustafa</span>
               <span className="text-[#d4a574] text-xl">♤</span>
             </span>
 
-            {/* Desktop Menü */}
-            <div className="hidden md:flex items-center gap-8">
+            {/* Desktop Menu */}
+            <div className="navbar-menu">
               <a href="#coffee-types" className="hover:text-[#d4a574] transition-colors">
                 {language === 'tr' ? 'Kahve Çeşitleri' : 'Coffee Types'}
               </a>
@@ -260,10 +260,10 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Mobil Menü Butonu */}
+            {/* Mobile Menu Button */}
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-[#3a2218] transition-colors"
+              className="mobile-menu-button"
             >
               {isMenuOpen ? (
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,61 +275,58 @@ export default function Home() {
                 </svg>
               )}
             </button>
-          </div>
 
-          {/* Mobil Menü */}
-          <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'} py-4 space-y-4 border-t border-[#3a2218]`}>
-            <a 
-              href="#coffee-types" 
-              className="block px-4 py-2 hover:bg-[#3a2218] rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {language === 'tr' ? 'Kahve Çeşitleri' : 'Coffee Types'}
-            </a>
-            <Link 
-              href="/discover" 
-              className="block px-4 py-2 hover:bg-[#3a2218] rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {language === 'tr' ? 'Keşfet' : 'Discover'}
-            </Link>
-            <a 
-              href="#recipes" 
-              className="block px-4 py-2 hover:bg-[#3a2218] rounded-lg transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {language === 'tr' ? 'Tarifler' : 'Recipes'}
-            </a>
-            
-            {/* Mobil Dil Seçimi */}
-            <div className="px-4 py-2">
-              <div className="flex items-center gap-2 bg-[#1a110b] rounded-full p-1 w-fit">
-                <button
-                  onClick={() => {
-                    setLanguage('tr');
-                    setIsMenuOpen(false);
-                  }}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                    language === 'tr'
-                      ? 'bg-[#d4a574] text-[#2c1810]'
-                      : 'text-white/70 hover:text-white'
-                  }`}
-                >
-                  TR
-                </button>
-                <button
-                  onClick={() => {
-                    setLanguage('en');
-                    setIsMenuOpen(false);
-                  }}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                    language === 'en'
-                      ? 'bg-[#d4a574] text-[#2c1810]'
-                      : 'text-white/70 hover:text-white'
-                  }`}
-                >
-                  EN
-                </button>
+            {/* Mobile Menu */}
+            <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+              <a 
+                href="#coffee-types" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {language === 'tr' ? 'Kahve Çeşitleri' : 'Coffee Types'}
+              </a>
+              <Link 
+                href="/discover" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {language === 'tr' ? 'Keşfet' : 'Discover'}
+              </Link>
+              <a 
+                href="#recipes" 
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {language === 'tr' ? 'Tarifler' : 'Recipes'}
+              </a>
+              
+              {/* Mobile Language Selection */}
+              <div className="px-4 py-2">
+                <div className="flex items-center gap-2 bg-[#1a110b] rounded-full p-1 w-fit">
+                  <button
+                    onClick={() => {
+                      setLanguage('tr');
+                      setIsMenuOpen(false);
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                      language === 'tr'
+                        ? 'bg-[#d4a574] text-[#2c1810]'
+                        : 'text-white/70 hover:text-white'
+                    }`}
+                  >
+                    TR
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLanguage('en');
+                      setIsMenuOpen(false);
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                      language === 'en'
+                        ? 'bg-[#d4a574] text-[#2c1810]'
+                        : 'text-white/70 hover:text-white'
+                    }`}
+                  >
+                    EN
+                  </button>
+                </div>
               </div>
             </div>
           </div>
