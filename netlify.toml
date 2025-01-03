@@ -3,4 +3,7 @@
   publish = "out"
 
 [build.environment]
-  NODE_VERSION = "18" 
+  NODE_VERSION = "18"
+  GO_VERSION = "none"
+  RUBY_VERSION = "none"
+  PYTHON_VERSION = "none" 
