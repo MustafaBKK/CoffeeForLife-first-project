@@ -3,12 +3,13 @@ const nextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(css|scss)$/,
+      use: ['style-loader', 'css-loader']
+    });
+    return config;
   }
 }
 
