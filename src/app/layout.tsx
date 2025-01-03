@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" className="scroll-smooth">
-      <body className={`${inter.className} min-h-screen bg-[#f8f3e7]`}>
+      <body className="min-h-screen bg-[#f8f3e7]">
         <LanguageProvider>
           {children}
         </LanguageProvider>
