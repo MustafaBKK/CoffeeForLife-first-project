@@ -13,6 +13,7 @@ interface HistoryModal {
 export default function Discover() {
   const [language, setLanguage] = useState<'tr' | 'en'>('tr');
   const [selectedHistory, setSelectedHistory] = useState<HistoryModal | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const historyContent = {
     discovery: {
@@ -88,19 +89,36 @@ export default function Discover() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#2c1810] bg-opacity-90 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Sol Menü */}
-            <div className="flex items-center gap-8">
+            {/* Sol Menü - Desktop */}
+            <div className="hidden md:flex items-center gap-8">
               <Link href="/" className="hover:text-[#d4a574] transition-colors">
                 {language === 'tr' ? 'Ana Sayfa' : 'Home'}
               </Link>
             </div>
 
-            {/* Orta Logo */}
-            <span className="flex items-center gap-3 text-lg">
-              <span className="text-[#d4a574] text-xl">♢</span>
-              <span className="font-serif tracking-wider text-[#e5b585]">Made by Mustafa</span>
-              <span className="text-[#d4a574] text-xl">♢</span>
-            </span>
+            {/* Mobil Menü Butonu */}
+            <div className="flex md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-white p-2 hover:bg-[#3a2218] rounded-lg transition-colors"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {isMobileMenuOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+            </div>
 
             {/* Dil Seçimi */}
             <div className="flex items-center gap-2 bg-[#1a110b] rounded-full p-1">
@@ -125,6 +143,33 @@ export default function Discover() {
                 EN
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Mobil Menü - Overlay */}
+        <div 
+          className={`
+            fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 md:hidden
+            ${isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
+          `}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+
+        {/* Mobil Menü - İçerik */}
+        <div
+          className={`
+            absolute top-16 left-0 right-0 bg-[#2c1810] transform transition-transform duration-300 ease-in-out md:hidden
+            ${isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'}
+          `}
+        >
+          <div className="px-4 pt-2 pb-3 space-y-1 border-t border-[#3a2218]">
+            <Link
+              href="/"
+              className="block px-3 py-2 text-white hover:bg-[#3a2218] rounded-lg transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {language === 'tr' ? 'Ana Sayfa' : 'Home'}
+            </Link>
           </div>
         </div>
       </nav>
@@ -220,7 +265,7 @@ export default function Discover() {
                   </h4>
                   <ul className="text-sm text-gray-600 space-y-2">
                     <li>• {language === 'tr' ? 'Kaba çekilmiş kahve kullanın' : 'Use coarsely ground coffee'}</li>
-                    <li>• {language === 'tr' ? 'S��cak su ekleyin ve karıştırın' : 'Add hot water and stir'}</li>
+                    <li>• {language === 'tr' ? 'Sicak su ekleyin ve karıştırın' : 'Add hot water and stir'}</li>
                     <li>• {language === 'tr' ? '4 dakika bekleyin' : 'Wait 4 minutes'}</li>
                     <li>• {language === 'tr' ? 'Yavaşça presleyin' : 'Press down slowly'}</li>
                   </ul>

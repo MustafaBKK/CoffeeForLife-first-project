@@ -34,11 +34,69 @@ body {
 }
 
 .mobile-menu {
-  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  background-color: #2c1810;
+  transform: translateY(-100%);
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 50;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+  padding: 1rem 0;
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: white;
+  font-size: 1.125rem;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu a:hover {
+  background-color: #3a2116;
 }
 
 .logo-text {
   display: inline;
+}
+
+/* Discover Header Styles */
+.discover-header {
+  @apply fixed top-0 left-0 right-0 z-50 bg-[#2c1810] bg-opacity-90 text-white;
+}
+
+.discover-header-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.discover-header-content {
+  @apply flex items-center justify-between h-16;
+}
+
+.discover-logo {
+  @apply flex items-center gap-3 text-lg;
+}
+
+.discover-nav {
+  @apply flex items-center gap-8;
+}
+
+.discover-mobile-menu {
+  display: none;
+}
+
+.discover-mobile-button {
+  display: none;
 }
 
 /* Tablet ve Mobil Styles */
@@ -82,6 +140,63 @@ body {
   .logo-text {
     display: none;
   }
+
+  /* Discover Header Mobile Styles */
+  .discover-nav {
+    display: none;
+  }
+
+  .discover-mobile-button {
+    @apply block p-2 rounded-lg hover:bg-[#3a2218] transition-colors;
+  }
+
+  .discover-mobile-menu {
+    @apply fixed top-16 left-0 right-0 bg-[#2c1810] bg-opacity-90;
+    display: none;
+    padding: 1rem 0;
+    border-top: 1px solid #3a2218;
+  }
+
+  .discover-mobile-menu.open {
+    display: block;
+  }
+
+  .discover-mobile-menu a {
+    @apply block px-4 py-2 hover:bg-[#3a2218] transition-colors;
+  }
+
+  .discover-mobile-menu .language-buttons {
+    @apply px-4 py-2 flex gap-2;
+  }
+
+  /* Discover Page Mobile Styles */
+  .discover-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .discover-hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .discover-hero p {
+    font-size: 1.2rem;
+  }
+
+  .discover-method {
+    margin-bottom: 2rem;
+  }
+
+  .discover-method-image {
+    height: 200px;
+  }
+
+  .discover-method-content {
+    padding: 1rem;
+  }
+
+  .discover-steps {
+    padding: 0.75rem;
+  }
 }
 
 /* Küçük Mobil Ekranlar */
@@ -93,5 +208,47 @@ body {
   .mobile-menu a {
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
+  }
+
+  /* Discover Header Small Mobile Styles */
+  .discover-mobile-menu {
+    padding: 0.75rem 0;
+  }
+
+  .discover-mobile-menu a {
+    font-size: 0.875rem;
+  }
+
+  /* Discover Page Small Mobile Styles */
+  .discover-hero h1 {
+    font-size: 2rem;
+  }
+
+  .discover-hero p {
+    font-size: 1rem;
+  }
+
+  .discover-method-image {
+    height: 150px;
+  }
+
+  .discover-steps {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-menu {
+    display: none;
+  }
+  
+  .mobile-menu-button {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-button {
+    display: none;
   }
 }
