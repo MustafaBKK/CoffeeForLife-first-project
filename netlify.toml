@@ -4,8 +4,4 @@
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
-  NODE_VERSION = "18"
-  NEXT_PUBLIC_SITE_URL = "https://coffee-for-life.netlify.app"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs" 
+  NODE_VERSION = "18" 
