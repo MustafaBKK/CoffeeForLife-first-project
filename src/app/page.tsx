@@ -767,11 +767,65 @@ export default function Home() {
                         : "Top with thick milk foam"}
                     </li>
                   </ol>
+                ) : selectedRecipe.name === "Cold Brew" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr'
+                        ? "100-150 gram kahveyi iri çekin"
+                        : "Grind 100-150 grams of coffee coarsely"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "Kahvenin üzerine 1 litre soğuk su ekleyin"
+                        : "Add 1 liter of cold water over the coffee"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "12-16 saat buzdolabında bekletin"
+                        : "Let it steep in the refrigerator for 12-16 hours"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Kahve konsantresini filtreden geçirin"
+                        : "Filter the coffee concentrate"}
+                    </li>
+                  </ol>
+                ) : selectedRecipe.name === "Chemex" ? (
+                  <ol className="text-gray-600 space-y-3">
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">1.</span>
+                      {language === 'tr'
+                        ? "Chemex filtresini ıslatın ve ön ısıtma yapın"
+                        : "Wet the Chemex filter and pre-heat"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">2.</span>
+                      {language === 'tr'
+                        ? "30g kahveyi orta kalınlıkta öğütün"
+                        : "Grind 30g coffee to medium coarseness"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">3.</span>
+                      {language === 'tr'
+                        ? "İlk demleme için 60ml su ekleyip 30-45 saniye bekleyin"
+                        : "Add 60ml water for blooming and wait 30-45 seconds"}
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-[#d4a574] font-bold mr-2">4.</span>
+                      {language === 'tr'
+                        ? "Kalan suyu (440ml) dairesel hareketlerle ekleyin"
+                        : "Add remaining water (440ml) in circular motions"}
+                    </li>
+                  </ol>
                 ) : (
                   <p className="text-gray-600">
                     {language === 'tr'
-                      ? "Tüm malzemeleri belirtilen sırayla ekleyip hazırlayın"
-                      : "Add all ingredients in the specified order and prepare"}
+                      ? "Espresso üzerine buharda ısıtılmış süt ekleyin ve süt kremasıyla tamamlayın. Hepsi bu!"
+                      : "Add steamed milk to espresso and top it off with milk foam. That's it!"}
                   </p>
                 )}
               </div>
