@@ -23,5 +23,5 @@ export default function RootLayout({
         </LanguageProvider>
       </body>
     </html>
-  );
+  )
 }
