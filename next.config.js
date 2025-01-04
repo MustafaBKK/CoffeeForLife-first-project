@@ -1,17 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
-        protocol: 'https',
+        protocol: 'http',
         hostname: '**',
       },
     ],
-    unoptimized: true,
-  },
-  webpack: (config) => {
-    config.resolve.fallback = { fs: false };
-    return config;
   }
 }
 
