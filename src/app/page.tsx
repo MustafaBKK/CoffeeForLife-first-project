@@ -404,8 +404,8 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center">
-        <div className="absolute inset-0 z-0">
+      <section className="relative h-[90vh] w-full flex items-center justify-center">
+        <div className="absolute inset-0">
           <Image
             src="/coffee-hero.jpg"
             alt="Kahve"

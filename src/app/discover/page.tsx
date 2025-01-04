@@ -163,20 +163,52 @@ export default function Discover() {
           `}
         >
           <div className="px-4 pt-2 pb-3 space-y-1 border-t border-[#3a2218]">
-            <Link
-              href="/"
-              className="block px-3 py-2 text-white hover:bg-[#3a2218] rounded-lg transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {language === 'tr' ? 'Ana Sayfa' : 'Home'}
-            </Link>
+            <div className="flex items-center justify-between">
+              <Link
+                href="/"
+                className="block px-3 py-2 text-white hover:bg-[#3a2218] rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {language === 'tr' ? 'Ana Sayfa' : 'Home'}
+              </Link>
+              
+              {/* Mobil Dil Seçimi */}
+              <div className="flex items-center gap-2 bg-[#1a110b] rounded-full p-1">
+                <button
+                  onClick={() => {
+                    setLanguage('tr');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    language === 'tr'
+                      ? 'bg-[#d4a574] text-[#2c1810]'
+                      : 'text-white/70 hover:text-white'
+                  }`}
+                >
+                  TR
+                </button>
+                <button
+                  onClick={() => {
+                    setLanguage('en');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    language === 'en'
+                      ? 'bg-[#d4a574] text-[#2c1810]'
+                      : 'text-white/70 hover:text-white'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center">
-        <div className="absolute inset-0 z-0">
+      <section className="relative h-screen w-full flex items-center justify-center">
+        <div className="absolute inset-0">
           <Image
             src="/brewing-methods.jpg"
             alt="Kahve Demleme"
