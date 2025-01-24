@@ -433,12 +433,21 @@ export default function Home() {
           {language === 'tr' ? 'Popüler Kahve Türleri' : 'Popular Coffee Types'}
         </h2>
         <div className="relative max-w-7xl mx-auto">
-          <div className="overflow-x-auto pb-8 hide-scrollbar">
-            <div className="flex gap-8 w-max px-4 snap-x snap-mandatory">
+          <div className="overflow-x-auto pb-8 hide-scrollbar scroll-smooth">
+            <div className="flex gap-8 w-max px-4 snap-x snap-mandatory md:snap-none"
+              style={{
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch'
+              }}
+            >
               {coffeeOrigins.map((coffee, index) => (
                 <div 
                   key={index} 
-                  className="bg-white rounded-lg shadow-lg overflow-hidden w-[350px] flex-shrink-0 transition-transform hover:scale-105 snap-center"
+                  className="bg-white rounded-lg shadow-lg overflow-hidden w-[350px] flex-shrink-0 transition-transform hover:scale-105 snap-center md:snap-align-none"
+                  style={{
+                    scrollSnapAlign: 'center',
+                    scrollSnapStop: 'always'
+                  }}
                 >
                   <div className="h-48 relative">
                     <Image
@@ -457,22 +466,30 @@ export default function Home() {
             </div>
           </div>
           
-          {/* Scroll Buttons */}
+          {/* Scroll Buttons - Only show on desktop */}
           <button 
             onClick={() => {
               const container = document.querySelector('.overflow-x-auto');
-              if (container) container.scrollBy({ left: -400, behavior: 'smooth' });
+              if (container) {
+                const cardWidth = 350; // Kart genişliği
+                const scrollAmount = cardWidth + 32; // 32 gap değeri
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+              }
             }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors"
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors hidden md:block"
           >
             ←
           </button>
           <button 
             onClick={() => {
               const container = document.querySelector('.overflow-x-auto');
-              if (container) container.scrollBy({ left: 400, behavior: 'smooth' });
+              if (container) {
+                const cardWidth = 350; // Kart genişliği
+                const scrollAmount = cardWidth + 32; // 32 gap değeri
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+              }
             }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors"
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#2c1810]/80 text-white p-3 rounded-full hover:bg-[#2c1810] transition-colors hidden md:block"
           >
             →
           </button>
